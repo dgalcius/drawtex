@@ -1,0 +1,19 @@
+\def\bop{}
+\def\eop{}
+\def\down#1{\vskip#1sp}
+\def\right#1{\hskip#1sp}
+\def\w#1{\def\register{#1}\hskip#1sp}
+\def\wzero{\hskip\register sp}
+\def\push{}
+\def\pop{}
+\def\fontdef#1#2#3#4{%
+  \expandafter\font\csname font-#1\endcsname=#2 at #3sp\relax
+}
+\def\fontsel#1{%
+  \csname font-#1\endcsname
+}
+\def\setchar#1{#1\ignorespaces}
+\def\text{\setchar}
+
+\parindent0pt
+\let\folio\relax
