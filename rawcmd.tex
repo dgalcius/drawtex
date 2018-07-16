@@ -1,19 +1,184 @@
-\def\bop{}
-\def\eop{}
-\def\down#1{\vskip#1sp}
-\def\right#1{\hskip#1sp}
-\def\w#1{\def\register{#1}\hskip#1sp}
-\def\wzero{\hskip\register sp}
-\def\push{}
-\def\pop{}
+\catcode`\_=11\relax
+\catcode`\@=11\relax
+\globaldefs=1
+\endlinechar=-1\relax % end line as if it ends with comment
+\def\writezero{\immediate\write0}
+\let\writezeroo\writezero
+% Registers 
+\newcount\h_reg
+\newcount\v_reg
+\newcount\x_reg
+\newcount\w_reg
+\newcount\y_reg
+\newcount\z_reg
+\newcount\stacklevel
+\newcount\current_stack
+\newcount\current_font
+%
+% \csname stack@1\endcsname{{}{}{}{}{}{}}
+%  
+\def\stackpush{%
+        \advance\stacklevel by1\relax
+        \current_stack=\number\stacklevel
+        \xdef\@next{%
+          \noexpand\expandafter\noexpand%
+          \xdef\noexpand\csname stack@\number\stacklevel\noexpand\endcsname%
+          {%
+                {\number\h_reg}%
+                {\number\v_reg}%
+                {\number\w_reg}%
+                {\number\x_reg}%
+                {\number\y_reg}%
+                {\number\z_reg}%
+                }%
+                }%
+                \@next
+          }
+\def\stackpop{%
+        \xdef\@next{%
+                \noexpand\popstack\csname stack@\number\stacklevel\endcsname
+                }%
+        \@next%
+        \advance\stacklevel by-1\relax\current_stack=\number\stacklevel%
+        \quitvmode
+        \writezero{s_v=\the\s_v;v_reg=\the\v_reg}%
+        \hrule height\numexpr(\s_v-\v_reg)sp width0pt
+        \hskip\h_reg sp\relax%.%
+        %
+        \writezero{s_h=\the\s_h;h_reg=\the\h_reg}%       
+        \hskip\numexpr(\s_h-\h_reg)sp\relax%
+        \h_reg=\s_h%
+        \v_reg=\s_v%
+        \x_reg=0%
+        }%
+\newcount\s_h
+\newcount\s_v
+\newcount\s_w
+\newcount\s_x
+\newcount\s_y
+\newcount\s_z
+\def\popstack#1#2#3#4#5#6{%
+        \s_h=#1%
+        \s_v=#2%
+        \s_w=#3%
+        \s_x=#4%
+        \s_y=#5%
+        \s_z=#6%
+        }
+\newdimen\vtemp
+\newdimen\htemp
+\newdimen\ftemp
+\def\showstack#1{%
+  \htemp=\h_reg sp\relax%
+  \vtemp=\v_reg sp\relax%
+  \writezero{%
+    opname=#1,%
+    level=\number\stacklevel;
+    h=\number\h_reg(\the\htemp),%
+    v=\number\v_reg(\the\vtemp),%
+    w=\number\w_reg,%
+    x=\number\x_reg,%
+    y=\number\y_reg,%
+    z=\number\z_reg,%
+    current_font=\number\current_font,}}
+\def\bop{%
+%         \hskip-1in
+%         \vskip-1in
+         \quitvmode}
+\def\eop{%
+        \vfill\eject
+        \stacklevel=0\relax
+        \current_stack=0\relax
+        \xdef\@next{%
+          \noexpand\expandafter\noexpand%
+          \xdef\noexpand\csname stack@\number\stacklevel
+          \noexpand\endcsname{%
+                {0}%
+                {0}%
+                {0}%
+                {0}%
+                {0}%
+                {0}}}%
+                \@next\relax
+        \h_reg=0%
+        \v_reg=0%
+        \w_reg=0%
+        \x_reg=0%
+        \y_reg=0%
+        \z_reg=0%
+        \current_font=0}
+\def\down#1{%
+        \advance\v_reg#1\relax
+        \vskip#1sp\relax
+        \hskip\h_reg sp\relax
+        \showstack{down}%
+        }%
+\def\right#1{\advance\h_reg by#1\relax\hskip#1sp\showstack{right}}
+\def\w#1{\w_reg=#1\relax\hskip#1sp\advance\h_reg by#1\relax}
+\def\x#1{\x_reg=#1\relax\hskip#1sp\advance\h_reg by#1\relax}
+\def\y#1{\y_reg=#1\relax\vskip\y_reg sp\advance\v_reg by#1\relax}
+\def\z#1{\z_reg=#1\relax\vskip#1sp\advance\v_reg by#1\relax}
+\def\wzero{\hskip\number\w_reg sp\advance\h_reg by\w_reg\relax}
+\def\xzero{\hskip\number\x_reg sp\advance\h_reg by\x_reg\relax}
+\def\yzero{\vskip\number\y_reg sp\advance\v_reg by\y_reg\relax}
+\def\zzero{\vskip\number\z_reg sp\advance\v_reg by\z_reg\relax}
+\def\push{\stackpush\showstack{push}}
+\def\pop{\stackpop\showstack{pop}}
 \def\fontdef#1#2#3#4{%
-  \expandafter\font\csname font-#1\endcsname=#2 at #3sp\relax
-}
+        \expandafter\xdef\csname font-#1-def\endcsname{#2 at #3sp\relax}%
+        \expandafter\font\csname font-#1\endcsname=#2 at #3sp\relax}
 \def\fontsel#1{%
-  \csname font-#1\endcsname
-}
-\def\setchar#1{#1\ignorespaces}
-\def\text{\setchar}
+        \csname font-#1\endcsname
+        \xdef\currfont{\csname font-#1\endcsname}%
+        \current_font=#1\relax}
+\def\setchar#1{%
+        \setbox0=\hbox{#1}%
+        \ht0=0pt\dp0=0pt%
+        \advance\h_reg by\wd0\relax
+        \quitvmode% ?
+        \box0}
+\def\text#1{%
+        \writezero{#1}%
+        \setchar{#1}\showstack{text}}
+\def\putrule#1#2{\vrule width#2sp height#1sp}
+% DIFF macro
+\def\DIFFEND{}
+\def\DIFFNEW#1\DIFFEND{}
+\def\DIFFOLDXX#1\DIFFEND{%
+        \setbox11=\hbox{#1}%
+        \hbox to0pt{%
+              \vbox to0pt{%
+              \vss
+              \special{color push rgb 1 0 0}%
+              \vrule height10pt width\wd11\relax
+              \special{color pop}}%
+              \hss}%
+              #1}
 
+\def\redsquare{\llap{\special{color push rgb 1 .6 .6}\vrule width1pc height1pc\special{color pop}}}
+\def\textmarker{\hbox to0pt{\hskip-\h_reg sp\vbox to0pt{\vskip-9pt\redsquare}}}%
+\def\DIFFOLD{%
+        \textmarker%
+        %\let\save_currfont\currfont
+        \edef\naext{\noexpand\font\noexpand\redfont=red-\csname font-\number\current_font-def\endcsname\noexpand\redfont}
+        \naext}
+\def\DIFFEND{\currfont}
+
+% plain tex settings
+\let\makeheadline\relax
+\let\makefootline\relax
+\def\pagebody{\vbox to\vsize{\boxmaxdepth\maxdepth \pagecontents}}
 \parindent0pt
 \let\folio\relax
+\rightskip0pt plus1fil
+\raggedright
+\baselineskip0pt
+\offinterlineskip
+\parskip0pt
+\topskip=0pt
+%\hoffset=0in
+%\voffset=0in
+\def\gobble#1{}
+\let\writezero\gobble% comment out for tracing
+\quitvmode
+
