@@ -2,7 +2,6 @@ require 'rubygems'
 require 'fileutils'
 
 filein = ARGV[0]
-fileout = 'rawtex01.tex'
 
 f = File.open(filein, 'r')
 lines = f.readlines
