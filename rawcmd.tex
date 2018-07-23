@@ -4,6 +4,8 @@
 \endlinechar=-1\relax % end line as if it ends with comment
 \def\writezero{\immediate\write0}
 \let\writezeroo\writezero
+\def\debugon{\let\writezero\writezeroo}
+\def\debugoff{\let\writezeroo\writezero}
 % Registers 
 \newcount\h_reg
 \newcount\v_reg
@@ -45,11 +47,10 @@
         \hrule height\numexpr(\s_v-\v_reg)sp width0pt
         \hskip\h_reg sp\relax%.%
         %
-        \writezero{s_h=\the\s_h;h_reg=\the\h_reg}%       
+        \writezero{s_h=\the\s_h;h_reg=\the\h_reg}%
         \hskip\numexpr(\s_h-\h_reg)sp\relax%
         \h_reg=\s_h%
         \v_reg=\s_v%
-        \x_reg=0%
         }%
 \newcount\s_h
 \newcount\s_v
@@ -80,11 +81,9 @@
     x=\number\x_reg,%
     y=\number\y_reg,%
     z=\number\z_reg,%
-    current_font=\number\current_font,}}
-\def\bop{%
-%         \hskip-1in
-%         \vskip-1in
-         \quitvmode}
+    current_font=\number\current_font,}%
+    }
+\def\bop{\quitvmode}
 \def\eop{%
         \vfill\eject
         \stacklevel=0\relax
@@ -140,7 +139,11 @@
 \def\text#1{%
         \writezero{#1}%
         \setchar{#1}\showstack{text}}
-\def\putrule#1#2{\vrule width#2sp height#1sp}
+\def\putrule#1#2{%
+  \vskip-#1sp\relax
+  \hskip\h_reg sp\relax
+  \vrule width#2sp height#1sp\relax
+  }
 % DIFF macro
 \def\DIFFEND{}
 \def\DIFFNEW#1\DIFFEND{}
