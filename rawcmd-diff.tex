@@ -1,0 +1,27 @@
+% DIFF macro
+\def\DIFFEND{}
+\def\DIFFNEW#1\DIFFEND{}
+\def\DIFFOLDXX#1\DIFFEND{%
+        \setbox11=\hbox{#1}%
+        \hbox to0pt{%
+              \vbox to0pt{%
+              \vss
+              \special{color push rgb 1 0 0}%
+              \vrule height10pt width\wd11\relax
+              \special{color pop}}%
+              \hss}%
+              #1}
+
+\def\redsquare{\llap{\special{color push rgb 1 .6 .6}\vrule width1pc height1pc\special{color pop}}}
+\def\textmarker{\hbox to0pt{\hskip-\h_reg sp\vbox to0pt{\vskip-9pt\redsquare}}}%
+\def\DIFFOLD{%
+        \textmarker%
+        %\let\save_currfont\currfont
+        \edef\naext{\noexpand\font\noexpand\redfont=red-\csname font-\number\current_font-def\endcsname\noexpand\redfont}
+        \naext}
+\def\DIFFEND{\currfont}
+%
+\def\DIFFEND{\special{color pop}}
+\def\DIFFNEW{\special{color push rgb 0 0 1 }}
+\def\DIFFOLD{\special{color push rgb 1 0 0 }}
+%
