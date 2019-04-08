@@ -25,3 +25,10 @@
 \def\DIFFNEW{\special{color push rgb 0 0 1 }}
 \def\DIFFOLD{\special{color push rgb 1 0 0 }}
 %
+\def\colorblue{\special{color push rgb 0 0 1 }}
+\def\colorred{\special{color push rgb 1 0 0 }}
+\def\colorpop{\special{color pop}}
+\long\def\DELETEOLD#1\DELETEEND{\colorred#1\colorpop}
+\long\def\INSERTOLD#1\INSERTEND{}
+\long\def\DELETENEW#1\DELETEEND{}
+\long\def\INSERTNEW#1\INSERTEND{\colorblue#1\colorpop}
