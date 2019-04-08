@@ -29,7 +29,10 @@ out.dvi: a.dvi b.dvi
 out.ps:
 	dvips  -tlandscape -ta3 out
 
-%.dvi: %.tex
+a.dvi: a.tex
+	etex $<
+
+b.dvi: b.tex
 	etex $<
 
 %.ps: %.dvi
