@@ -54,4 +54,5 @@ b.dvi: b.tex
 
 
 clean:
-	rm -f *.aux *.dvi *.fls *.log *.pdf *.rawtex*
+	rm -f *.aux *.dvi *.fls *.log *.ps *.pdf *.rawtex*
+	rm -f a.tex b.tex
