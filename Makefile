@@ -29,16 +29,8 @@ b.tex: 01.rawtex 02.rawtex
 --changed-group-format="\\DIFFNEW%    ************%c'\012'%>\\DIFFEND%    ############%c'\012'" \
 --unchanged-group-format="%<" $^ >$@ || true
 
-out.dvi: a.dvi b.dvi
-	dvimerge $^ 0 3
-	mv merged.dvi ab.dvi
-	dvitodvi -i ab.dvi -o out.dvi '2:0+1(14cm,0)'
-
-#out.ps: out.dvi
-#	dvips  -tlandscape -ta3 out
-
-out.ps: a.ps b.bs
-	psnup
+out.pdf: a.dvi b.dvi
+	dfc --side-by-side $^
 
 a.dvi: a.tex
 	etex $<
