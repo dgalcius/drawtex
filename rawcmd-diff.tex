@@ -30,46 +30,7 @@
 \def\colorgreen{\special{color push rgb 1 1 0 }}
 \def\colorpop{\special{color pop}}
 \long\def\DELETEOLD#1\DELETEEND{\colorred#1\colorpop}
-\long\def\INSERTOLD#1\INSERTEND{\colorblue#1\colorpop}
+\long\def\INSERTOLD#1\INSERTEND{}
 \long\def\DELETENEW#1\DELETEEND{}
 \long\def\INSERTNEW#1\INSERTEND{\colorblue#1\colorpop}
 
-
-\long\def\DELETEOLDred#1\DELETEENDred{#1}%\colorred#1\colorpop}
-\long\def\INSERTOLDred#1\INSERTENDred{\colorred#1\colorpop}
-\long\def\DELETENEWred#1\DELETEENDred{#1}
-\long\def\INSERTNEWred#1\INSERTENDred{\colorred#1\colorpop}
-\long\def\DIFFOLDred#1\DIFFENDred{\colorred#1\colorpop}
-
-\def\@firstofone#1{#1}
-\def\@empty{}
-\def\@@gobble#1{}
-\def\noharm%
-{%
-  \let\text\@firstofone
-  \let\x\@@gobble
-  \let\w\@@gobble
-  \let\right\@@gobble
-  \let\wzero\@empty
-  \let\xzero\@empty
-}
-\long\def\REDOLD#1\ENDREDOLD%
-{%
-  \begingroup
-    \noharm
-    \xdef\@xold{#1}%
-  \endgroup
-  }
-\def\printred#1{\colorred#1\colorpop}
-\long\def\REDNEW#1\ENDREDNEW%
-{%
-  \begingroup%
-    \noharm%
-    \xdef\@xnew{#1}%
-  \endgroup%
-  \ifx\@xnew\@xold\relax
-    #1
-  \else
-    \printred{#1}%
-  \fi
-}
