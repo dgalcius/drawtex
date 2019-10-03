@@ -24,10 +24,19 @@ a.tex: 01.rawtex 02.rawtex
 
 #--old-group-format="\\DELETENEW%c'\012'%<\\DELETEEND%c'\012'" \
 #--new-group-format="\\INSERTNEW%c'\012'%>\INSERTEND%c'\012'" \
+#--changed-group-format="    \\REDOLD%c'\012'    %<    \\ENDREDOLD%c'\012'\\REDNEW%c'\012'%>\\ENDREDNEW%c'\012'" 
 
-a1.tex: 02.rawtex 01.rawtex
+a1.tex: 02.rawtex 01.rawtex .FORCE
 	diff -a \
---changed-group-format="\\REDOLD%c'\012'%<\\ENDREDOLD%c'\012'\\REDNEW%c'\012'%>\\ENDREDNEW%c'\012'" \
+--old-group-format="   \\REDOLD%c'\012'   %<   \\ENDREDOLD%c'\012'" \
+--new-group-format="\\REDNEW%c'\012'%>\\ENDREDNEW%c'\012'" \
+--unchanged-group-format="%<" 02.rawtex 01.rawtex >$@ || true
+
+__a.tex: __01.rawtex __02.rawtex
+	diff -a   \
+--old-group-format="\\DELETEOLD%c'\012'%<\\DELETEEND%c'\012'" \
+--new-group-format="\\INSERTOLD%c'\012'%>\INSERTEND%c'\012'" \
+--changed-group-format="\\DIFFOLD%    ************%c'\012'%<\\DIFFEND%    ############%c'\012'" \
 --unchanged-group-format="%<" $^ >$@ || true
 
 b.tex: 01.rawtex 02.rawtex
@@ -46,6 +55,9 @@ a.dvi: a.tex
 a1.dvi: a1.tex
 	etex $<
 
+__a.dvi: __a.tex
+	etex $<
+
 b.dvi: b.tex
 	etex $<
 
@@ -59,3 +71,5 @@ b.dvi: b.tex
 clean:
 	rm -f *.aux *.dvi *.fls *.log *.ps *.pdf *.rawtex*
 	rm -f a.tex b.tex
+
+.FORCE:
