@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-
-dvimerge $1 $2 1 3
-#mv merged.dvi dviss_0.dvi
-#dvitodvi -i dviss_0.dvi -o dviss_1.dvi '2:0+1(14cm,0)'
